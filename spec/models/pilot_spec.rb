@@ -19,4 +19,9 @@ RSpec.describe Pilot, type: :model do
   it "Ensures that the invalid pilot validations fail" do
     expect(invalid_pilot.valid?).to be false
   end
+
+  let(:ship) { Ship.create(weight_capacity: 100, fuel_cpacity: 120, fuel_level: 80, pilot_id: pilot.id ) }
+  xit "Ensure that a pilot-ship relationship is valid." do
+    expect(pilot.ship.id).to eq ship.id
+  end
 end

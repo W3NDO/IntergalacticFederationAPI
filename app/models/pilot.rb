@@ -1,7 +1,5 @@
 class Pilot < ApplicationRecord
-    # has_one :ship
-
-    before_save :certificate_valid?
+    has_one :ship, dependent: :destroy
     
     validates :certification, presence: true, uniqueness: true, if: :certificate_valid?
     validates :name, presence: true
