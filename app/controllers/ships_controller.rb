@@ -1,7 +1,7 @@
 class ShipsController < ApplicationController
-      # GET /ships
+# GET /ships
   def index
-    @ships = ship.all
+    @ships = Ship.all
 
     render json: @ships
   end
@@ -13,7 +13,7 @@ class ShipsController < ApplicationController
 
   # POST /ships
   def create
-    @ship = ship.new(ship_params)
+    @ship = Ship.new(ship_params)
 
     if @ship.save
       render json: {data: @ship, status: "SUCCESS", message: "ship successfully created"}, status: :ok
@@ -41,13 +41,13 @@ class ShipsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_ship
-      @ship = ship.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_ship
+    @ship = Ship.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def ship_params
-      params.require(:ship).permit(:weight_capacity, :fuel_capacity, :fuel_level, :pilot_id)
-    end
+  # Only allow a list of trusted parameters through.
+  def ship_params
+    params.require(:ship).permit(:weight_capacity, :fuel_capacity, :fuel_level, :pilot_id)
+  end
 end
