@@ -1,4 +1,8 @@
+
 class ShipsController < ApplicationController
+
+  before_action :set_ship, only: %i[ show update destroy ]
+
 # GET /ships
   def index
     @ships = Ship.all
@@ -8,35 +12,37 @@ class ShipsController < ApplicationController
 
   # GET /ships/1
   def show
-    render json: @ship
+    render json: {ship: @ship}, status: :ok
   end
 
   # POST /ships
   def create
+    pp "PARAMSS => #{params}"
     @ship = Ship.new(ship_params)
+    @ship.pilot = Pilot.find(ship_params[:pilot_id])
 
     if @ship.save
-      render json: {data: @ship, status: "SUCCESS", message: "ship successfully created"}, status: :ok
+      render json: {data: @ship, message: "ship successfully created"}, status: :ok
     else
-      render json: {status: "FAILURE", message: @ship.errors, status: :unprocessable_entity}
+      render json: {message: @ship.errors}, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /ships/1
   def update
     if @ship.update(ship_params)
-      render json: {data: @ship, status: "SUCCESS", message: "ship successfully updated"}, status: :ok
+      render json: {data: @ship, message: "ship successfully updated"}, status: :ok
     else
-      render json: {status: "FAILURE", message: @ship.errors, status: :unprocessable_entity}
+      render json: { message: @ship.errors}, status: :unprocessable_entity
     end
   end
 
   # DELETE /ships/1
   def destroy
     if @ship.destroy
-        render json: {status: "SUCCESS", message: "ship successfully deleted"}, status: :ok
+        render json: {message: "ship successfully deleted"}, status: :ok
     else
-      render json: {status: "FAILURE", message: @ship.errors, status: :unprocessable_entity}
+      render json: {message: @ship.errors}, status: :unprocessable_entity
     end
   end
 
