@@ -38,7 +38,7 @@ class PilotsController < ApplicationController
     if @pilot.destroy
         render json: {message: "Pilot successfully deleted"}, status: :ok
     else
-      render json: {message: @pilot.errors}, status: :unprocessable_entity
+      render json: {message: "Failed to destroy Pilot"}, status: :unprocessable_entity
     end
   end
 
