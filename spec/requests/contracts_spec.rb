@@ -22,7 +22,7 @@ RSpec.describe "/contracts", type: :request do
       :payload=> "minerals",
       :origin_planet=> "Calas",
       :destination_planet=> "Andvari",
-      :value=> 300
+      :value_cents=> 300
     }
   }
 
@@ -32,7 +32,7 @@ RSpec.describe "/contracts", type: :request do
       :payload=> "element zero",
       :origin_planet=> "Calas",
       :destination_planet=> "Dathomir",
-      :value=> 300
+      :value_cents=> -1
     }
   }
 
@@ -102,7 +102,7 @@ RSpec.describe "/contracts", type: :request do
           :payload=> "minerals",
           :origin_planet=> "Calas",
           :destination_planet=> "Andvari",
-          :value=> 300
+          :value_cents=> 300
         }
       }
 

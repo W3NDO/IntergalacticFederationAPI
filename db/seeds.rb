@@ -5,3 +5,8 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+planets = ["andvari", "aqua", "calas", "demeter"]
+planets.each do |planet|
+    Planet.create(name: planet, resources_received: 0, resources_sent: 0)
+end

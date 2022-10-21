@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :planets
+  resources :planets, only: [:show, :index, :update]
   resources :contracts
   resources :ships
   resources :resources

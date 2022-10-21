@@ -48,3 +48,5 @@ end
 
 
 gem "rspec-rails", "~> 6.0"
+
+gem "money-rails", "~> 1.15"

@@ -8,7 +8,7 @@ RSpec.describe Contract, type: :model do
         payload: "minerals",
         origin_planet: "Calas",
         destination_planet: "Andvari",
-        value: 300
+        value_cents: 300
       )
     end
     it "creates a contract with valid params" do

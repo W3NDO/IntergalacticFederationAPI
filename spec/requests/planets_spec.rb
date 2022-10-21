@@ -16,13 +16,7 @@ RSpec.describe "/planets", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Planet. As you add validations to Planet, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
-
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  
 
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
@@ -32,9 +26,9 @@ RSpec.describe "/planets", type: :request do
     {}
   }
 
+
   describe "GET /index" do
     it "renders a successful response" do
-      Planet.create! valid_attributes
       get planets_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
@@ -42,62 +36,31 @@ RSpec.describe "/planets", type: :request do
 
   describe "GET /show" do
     it "renders a successful response" do
-      planet = Planet.create! valid_attributes
+      planet = Planet.first
       get planet_url(planet), as: :json
       expect(response).to be_successful
-    end
-  end
-
-  describe "POST /create" do
-    context "with valid parameters" do
-      it "creates a new Planet" do
-        expect {
-          post planets_url,
-               params: { planet: valid_attributes }, headers: valid_headers, as: :json
-        }.to change(Planet, :count).by(1)
-      end
-
-      it "renders a JSON response with the new planet" do
-        post planets_url,
-             params: { planet: valid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:created)
-        expect(response.content_type).to match(a_string_including("application/json"))
-      end
-    end
-
-    context "with invalid parameters" do
-      it "does not create a new Planet" do
-        expect {
-          post planets_url,
-               params: { planet: invalid_attributes }, as: :json
-        }.to change(Planet, :count).by(0)
-      end
-
-      it "renders a JSON response with errors for the new planet" do
-        post planets_url,
-             params: { planet: invalid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including("application/json"))
-      end
     end
   end
 
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {
+          name: "andvari",
+          resources_sent: 10,
+          resources_received: 20
+        }
       }
+      let(:planet) {Planet.find_by(name: "andvari")}
 
       it "updates the requested planet" do
-        planet = Planet.create! valid_attributes
         patch planet_url(planet),
               params: { planet: new_attributes }, headers: valid_headers, as: :json
         planet.reload
-        skip("Add assertions for updated state")
+        expect(planet.resources_received).to eq 20
       end
 
       it "renders a JSON response with the planet" do
-        planet = Planet.create! valid_attributes
         patch planet_url(planet),
               params: { planet: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
@@ -106,22 +69,13 @@ RSpec.describe "/planets", type: :request do
     end
 
     context "with invalid parameters" do
+      let(:planet){Planet.find_by(name: "andvari")}
       it "renders a JSON response with errors for the planet" do
-        planet = Planet.create! valid_attributes
         patch planet_url(planet),
-              params: { planet: invalid_attributes }, headers: valid_headers, as: :json
+              params: { planet: {name: "andvari", resources_received: "cheese", resources_sent: "cake"} }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
-    end
-  end
-
-  describe "DELETE /destroy" do
-    it "destroys the requested planet" do
-      planet = Planet.create! valid_attributes
-      expect {
-        delete planet_url(planet), headers: valid_headers, as: :json
-      }.to change(Planet, :count).by(-1)
     end
   end
 end
