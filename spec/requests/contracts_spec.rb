@@ -18,17 +18,17 @@ RSpec.describe "/contracts", type: :request do
   # adjust the attributes here as well.
   let(:valid_attributes) {
     {
-      :description=> "Kirk moved minerals worth 300 from Calas to Dathomir",
+      :description=> "Kirk moved minerals worth 300 from Calas to Andvari",
       :payload=> "minerals",
       :origin_planet=> "Calas",
-      :destination_planet=> "Dathomir",
+      :destination_planet=> "Andvari",
       :value=> 300
     }
   }
 
   let(:invalid_attributes) {
     {
-      :description=> "Kirk moved minerals worth 300 from Calas to Dathomir",
+      :description=> "Kirk moved minerals worth 300 from Calas to Andvari",
       :payload=> "element zero",
       :origin_planet=> "Calas",
       :destination_planet=> "Dathomir",
@@ -98,10 +98,10 @@ RSpec.describe "/contracts", type: :request do
     context "with valid parameters" do
       let(:new_attributes) {
         {
-          :description=> "Kirk moved food worth 500 from Calas to Dathomir",
+          :description=> "Kirk moved food worth 500 from Calas to Andvari",
           :payload=> "minerals",
           :origin_planet=> "Calas",
-          :destination_planet=> "Dathomir",
+          :destination_planet=> "Andvari",
           :value=> 300
         }
       }
@@ -111,7 +111,7 @@ RSpec.describe "/contracts", type: :request do
         patch contract_url(contract),
               params: { contract: new_attributes }, headers: valid_headers, as: :json
         contract.reload
-        expect(contract.description).to eq "Kirk moved food worth 500 from Calas to Dathomir"
+        expect(contract.description).to eq "Kirk moved food worth 500 from Calas to Andvari"
       end
 
       it "renders a JSON response with the contract" do

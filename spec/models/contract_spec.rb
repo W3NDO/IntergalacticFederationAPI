@@ -7,7 +7,7 @@ RSpec.describe Contract, type: :model do
         description: "Kirk moved minerals worth 300 from Calas to Dathomir",
         payload: "minerals",
         origin_planet: "Calas",
-        destination_planet: "Dathomir",
+        destination_planet: "Andvari",
         value: 300
       )
     end
@@ -26,7 +26,9 @@ RSpec.describe Contract, type: :model do
     end
 
     # need planet model
-    xit "checks that the contract's destination planet and origin planet exist within the system" do
+    it "checks that the contract's destination planet and origin planet exist within the system" do
+      expect(Planet::TRAVEL_ADJACENCY_LIST.keys.include?(valid_contract.origin_planet.downcase)).to be true
+      expect(Planet::TRAVEL_ADJACENCY_LIST.keys.include?(valid_contract.destination_planet.downcase)).to be true
     end
     
   end

@@ -17,7 +17,7 @@ class ShipsController < ApplicationController
 
   # POST /ships
   def create
-    pp "PARAMSS => #{params}"
+    render json: {message: "fuel level can not exceed fuel capacity"}, status: :unprocessable_entity if (ship_params[:fuel_level] > ship_params[:fuel_capacity])
     @ship = Ship.new(ship_params)
     @ship.pilot = Pilot.find(ship_params[:pilot_id])
 
