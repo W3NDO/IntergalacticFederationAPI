@@ -309,3 +309,6 @@ To get all transport contracts, you send  GET request to `/contracts`
     ]
    ```
 
+## FEAT 4 travel between planets
+- requires a ship ID, origin planet ID and destination planet name. 
+- if the ship's current location is not the same as the destination planet, it will have to travel from its current location to the origin planet, then the destination planet. If this will consume more fuel than the ship has, then the system deems travel impossible. 
