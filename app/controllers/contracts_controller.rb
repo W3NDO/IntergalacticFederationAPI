@@ -50,6 +50,6 @@ class ContractsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def contract_params
-      params.require(:contract).permit(:description, :payload, :origin_planet, :destination_planet, :value)
+      params.require(:contract).permit(:description, :payload, :origin_planet, :destination_planet, :value, :status)
     end
 end

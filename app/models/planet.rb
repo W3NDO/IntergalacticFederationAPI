@@ -1,8 +1,8 @@
 class Planet < ApplicationRecord
     has_many :financial_transactions
 
-    validates :resources_received, presence: true, format: {with: /\A([0-9]*[\.])?[0-9]+\z/} # a valid float regex
-    validates :resources_sent, presence: true, format: {with: /\A([0-9]*[\.])?[0-9]+\z/}
+    validates :resources_received, presence: true
+    validates :resources_sent, presence: true
 
     TRAVEL_ADJACENCY_LIST = {
         # Origin_planet => {

@@ -2,7 +2,7 @@ class Contract < ApplicationRecord
     
     # before_save :check_validity
 
-    enum :status, {:open => 0, :closed => 1}
+    enum :status, open: "open", closed: "closed", default: :closed
 
     validates :description, presence: true
     validates :payload, presence: true, inclusion: {in: %w(minerals water food), message: "%{value} is not a valid payload"}

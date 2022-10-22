@@ -26,6 +26,7 @@ class PlanetsController < ApplicationController
 
   # PATCH/PUT /planets/1
   def update
+    # check_castable(planet_params[:resources_sent], planet_params[:resources_received])
     if @planet.update(planet_params)
       render json: @planet
     else
@@ -47,5 +48,20 @@ class PlanetsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def planet_params
       params.require(:planet).permit(:name, :resources_received, :resources_sent)
+    end
+
+    def check_castable(sent, received)
+      sent_int = Integer(sent) rescue nil
+      received_int = Integer(received) rescue nil
+      if sent_int
+        planet_params[:resources_sent] = sent_int
+      else 
+        raise ArgumentError "resources_sent must be an int"
+      end
+      if received_int
+        planet_params[:resources_received] = received_int
+      else
+        raise ArgumentError "resources_received must be an int"
+      end
     end
 end

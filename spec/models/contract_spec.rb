@@ -6,9 +6,9 @@ RSpec.describe Contract, type: :model do
       Contract.new(
         description: "Kirk moved minerals worth 300 from Calas to Dathomir",
         payload: "minerals",
-        origin_planet: "Calas",
-        destination_planet: "Andvari",
-        status: 1,
+        origin_planet: "calas",
+        destination_planet: "andvari",
+        status: "open",
         value_cents: 300
       )
     end

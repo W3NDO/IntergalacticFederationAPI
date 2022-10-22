@@ -16,7 +16,7 @@ RSpec.describe "/ships", type: :request do
     {
       weight_capacity: 100, 
       fuel_capacity: 120, 
-      fuel_level: -1, 
+      fuel_level: 200, 
       pilot_id: pilot.id
     }
   }

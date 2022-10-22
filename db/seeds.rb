@@ -30,12 +30,18 @@ valid_routes = {"andvari" => {
 }}
 
 # Planet seeds
+pp ">>>>> Seeding Planets"
+
 planets = ["andvari", "aqua", "calas", "demeter"]
 planets.each do |planet|
     Planet.create(name: planet, resources_received: 0, resources_sent: 0)
 end
 
+pp "#{Planet.count} planets created"
+
 # pilot seeds
+pp ">>>>> Seeding Pilots"
+
 pilot_names = ["Jean Luc Piccard", "Jane Shephard", "Jack Sparrow"]
 valid_certifications = [199992, 199984, 199836 ]
 pilot_names.each_with_index do |pilot, index|
@@ -48,7 +54,11 @@ pilot_names.each_with_index do |pilot, index|
     )
 end
 
+pp "#{Pilot.count} pilots created"
+
 #ship seeds
+pp ">>>>> Seeding Ships"
+
 ship_names = ["USS Orville", "Normandy", "Black Perl"]
 ship_names.each_with_index do |ship, index|
     Ship.create(
@@ -59,8 +69,10 @@ ship_names.each_with_index do |ship, index|
         fuel_level: rand(0..900)
     )
 end
+pp "#{Ship.count} ships created"
 
 # contract seeds
+pp ">>>>> Seeding Contracts"
 4.times do
     origin = valid_routes.keys.sample
     destination = valid_routes[origin].keys.sample
@@ -74,16 +86,51 @@ end
         status: ["open", "closed"].sample
     )
 end
+pp "#{Contract.count} contracts created"
 
 #resource seeds
+pp ">>>>> Seeding Resources"
 resource_types.each do |resource|
     Resource.create(
         name: resource,
         weight: rand(100..300)
     )
 end
+pp "#{Resource.count} resources created"
 
 # FinancialTransaction seeds
-
+pp ">>>>> Seeding Financial Transactions"
+# This is a transport transaction
+pp " \t building Transport transactions"
+2.times do
+    origin = valid_routes.keys.sample
+    destination = valid_routes[origin].keys.sample
+    pilot = Pilot.find(rand(1..3))
+    FinancialTransaction.create(
+        description: "Transporting #{resource_types.sample} from #{origin} to #{destination}",
+        transaction_type: 1,
+        amount: rand(100..500),
+        pilot_id: rand(1..3),
+        destination_planet_id: Planet.find_by(name: destination).id,
+        origin_planet_id: Planet.find_by(name: origin).id,
+        ship_id: Ship.find_by(pilot_id: pilot.id).id  
+    )    
+end
+pp "#{FinancialTransaction.count} Transport transactions created"
+# a fuel refill transaction
+pp " \t building Fuel Refill transactions"
+2.times do
+    origin = valid_routes.keys.sample
+    pilot = Pilot.find(rand(1..3))
+    FinancialTransaction.create(
+        description: "Refuelling at #{origin}",
+        transaction_type: 2,
+        amount: rand(100..500),
+        pilot_id: rand(1..3),
+        origin_planet_id: Planet.find_by(name: origin).id,
+        ship_id: Ship.find_by(pilot_id: pilot.id).id 
+    )
+end
+pp "#{FinancialTransaction.count} Fuel Refill transactions created"
 
 

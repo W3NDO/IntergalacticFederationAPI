@@ -73,7 +73,10 @@ RSpec.describe "/resources", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        {name: 1, weight: 100}
+        {
+          name: "minerals", 
+          weight: 100
+        }
       }
 
       it "updates the requested resource" do
