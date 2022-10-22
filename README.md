@@ -243,3 +243,69 @@ https://gist.github.com/talyssonoc/fa8094bc4f87ecee9f483f5fbc16862c You can find
     "message": "Ship successfully deleted"
    }
    ```
+
+## FEAT 2: Publish transport contracts
+To get all transport contracts, you send  GET request to `/contracts`
+- endpoint `GET /contracts`
+- returns a list of all contracts that looks like this
+   ```
+    "data": [
+        {
+            "id": 2,
+            "description": "Jean Luc Piccard transported food from andvari to calas ",
+            "payload": "food",
+            "origin_planet": "andvari",
+            "destination_planet": "calas",
+            "created_at": "2022-10-22T19:53:28.555Z",
+            "updated_at": "2022-10-22T19:53:28.555Z",
+            "value_cents": 289,
+            "value_currency": "USD",
+            "status": "closed"
+        },
+        {
+            "id": 3,
+            "description": "Jack Sparrow transported food from calas to aqua ",
+            "payload": "food",
+            "origin_planet": "calas",
+            "destination_planet": "aqua",
+            "created_at": "2022-10-22T19:53:28.557Z",
+            "updated_at": "2022-10-22T19:53:28.557Z",
+            "value_cents": 282,
+            "value_currency": "USD",
+            "status": "closed"
+        },
+        {
+            "id": 4,
+            "description": "Jean Luc Piccard transported minerals from calas to demeter ",
+            "payload": "minerals",
+            "origin_planet": "calas",
+            "destination_planet": "demeter",
+            "created_at": "2022-10-22T19:53:28.559Z",
+            "updated_at": "2022-10-22T19:53:28.559Z",
+            "value_cents": 332,
+            "value_currency": "USD",
+            "status": "closed"
+        }
+    ]
+   ```
+
+## FEAT 3: List Open Contracts
+- endpoint `GET /contracts?status=open`
+- will return a list of open contracts, that looks like this
+   ```
+   "data": [
+        {
+            "id": 1,
+            "description": "Jane Shephard transported water from calas to andvari ",
+            "payload": "water",
+            "origin_planet": "calas",
+            "destination_planet": "andvari",
+            "created_at": "2022-10-22T19:53:28.552Z",
+            "updated_at": "2022-10-22T19:53:28.552Z",
+            "value_cents": 290,
+            "value_currency": "USD",
+            "status": "open"
+        }
+    ]
+   ```
+

@@ -3,7 +3,12 @@ class ContractsController < ApplicationController
 
   # GET /contracts
   def index
-    @contracts = Contract.all
+    status = nil
+    if params[:status]
+      @contracts = Contract.all.where(status: params[:status])
+    else
+      @contracts = Contract.all
+    end
 
     render json: {data: @contracts}, status: :ok
   end
