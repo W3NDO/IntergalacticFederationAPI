@@ -16,7 +16,6 @@ class FinancialTransactionsController < ApplicationController
   # POST /financial_transactions
   def create
     @financial_transaction = FinancialTransaction.new(financial_transaction_params)
-
     if @financial_transaction.save
       render json: @financial_transaction, status: :created, location: @financial_transaction
     else
@@ -46,6 +45,17 @@ class FinancialTransactionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def financial_transaction_params
-      params.require(:financial_transaction).permit(:description, :type, :transaction_hash, :amount, :origin_planet, :destination_planet, :ship_name, :pilot_certification)
+      params.require(:financial_transaction).permit(:description, :type, :transaction_hash, :transaction_type, :value_cents, :amount, :origin_planet_id, :destination_planet_id, :ship_id, :pilot_id)
+    end
+
+    def create_hash(params) #v2
+      return if params.keys.include?(:transaction_hash)
+      token = nil
+      loop do
+        token = SecureRandom.hex
+        break unless FinancialTransaction.all.pluck(:transaction_hash).include?(token)
+      end
+      params[:transaction_hash] = token
+      params
     end
 end

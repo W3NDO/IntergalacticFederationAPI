@@ -1,13 +1,45 @@
 require 'rails_helper'
 
 RSpec.describe "/financial_transactions", type: :request do
-
+  let(:pilot){Pilot.create!(
+    name: "Jean Luc Piccard",
+    age: rand(18..35),
+    location_planet: "calas",
+    credits_cents: rand(100..1000),
+    certification: 198705)
+  }
+  let(:ship){ Ship.create!(
+    name: "Normandy", 
+    pilot_id: pilot.id,
+    fuel_capacity: rand(600..1000),
+    weight_capacity: rand(100000..200000),
+    fuel_level: rand(0..900)
+  )}
+  let(:planet_origin){
+    Planet.create!(name: "calas", resources_received: 0, resources_sent: 0)
+  }
+  let(:planet_destination){
+    Planet.create!(name: "andvari", resources_received: 0, resources_sent: 0)
+  }
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      description: "Transporting minerals from #{planet_origin.name} to #{planet_destination.name}",
+      transaction_type: "resource_transport",
+      amount: rand(100..500),
+      pilot_id: pilot.id,
+      destination_planet_id: planet_destination.id,
+      origin_planet_id: planet_origin.id,
+      ship_id: ship.id
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      transaction_type: "fuel_refill",
+      amount: rand(100..500),
+      pilot_id: pilot.id,
+      ship_id: ship.id
+    }
   }
 
   let(:valid_headers) {
@@ -33,6 +65,7 @@ RSpec.describe "/financial_transactions", type: :request do
   describe "POST /create" do
     context "with valid parameters" do
       it "creates a new FinancialTransaction" do
+        expect(FinancialTransaction.new(valid_attributes).valid?).to be true
         expect {
           post financial_transactions_url,
                params: { financial_transaction: valid_attributes }, headers: valid_headers, as: :json
@@ -64,46 +97,54 @@ RSpec.describe "/financial_transactions", type: :request do
     end
   end
 
-  describe "PATCH /update" do
-    context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+  # describe "PATCH /update" do
+  #   context "with valid parameters" do
+  #     let(:new_attributes) {
+  #       {
+  #         description: "Transporting minerals from #{planet_origin.name} to #{planet_destination.name}",
+  #         transaction_type: "fuel_refill",
+  #         amount: rand(100..500),
+  #         pilot_id: pilot.id,
+  #         destination_planet_id: planet_destination.id,
+  #         origin_planet_id: planet_origin.id,
+  #         ship_id: ship.id
+  #       }
+  #     }
 
-      it "updates the requested financial_transaction" do
-        financial_transaction = FinancialTransaction.create! valid_attributes
-        patch financial_transaction_url(financial_transaction),
-              params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
-        financial_transaction.reload
-        skip("Add assertions for updated state")
-      end
+  #     it "updates the requested financial_transaction" do
+  #       financial_transaction = FinancialTransaction.create! valid_attributes
+  #       patch financial_transaction_url(financial_transaction),
+  #             params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
+  #       financial_transaction.reload
+  #       skip("Add assertions for updated state")
+  #     end
 
-      it "renders a JSON response with the financial_transaction" do
-        financial_transaction = FinancialTransaction.create! valid_attributes
-        patch financial_transaction_url(financial_transaction),
-              params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to match(a_string_including("application/json"))
-      end
-    end
+  #     it "renders a JSON response with the financial_transaction" do
+  #       financial_transaction = FinancialTransaction.create! valid_attributes
+  #       patch financial_transaction_url(financial_transaction),
+  #             params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
+  #       expect(response).to have_http_status(:ok)
+  #       expect(response.content_type).to match(a_string_including("application/json"))
+  #     end
+  #   end
 
-    context "with invalid parameters" do
-      it "renders a JSON response with errors for the financial_transaction" do
-        financial_transaction = FinancialTransaction.create! valid_attributes
-        patch financial_transaction_url(financial_transaction),
-              params: { financial_transaction: invalid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including("application/json"))
-      end
-    end
-  end
+  #   context "with invalid parameters" do
+  #     it "renders a JSON response with errors for the financial_transaction" do
+  #       financial_transaction = FinancialTransaction.create! valid_attributes
+  #       patch financial_transaction_url(financial_transaction),
+  #             params: { financial_transaction: invalid_attributes }, headers: valid_headers, as: :json
+  #       expect(response).to have_http_status(:unprocessable_entity)
+  #       expect(response.content_type).to match(a_string_including("application/json"))
+  #     end
+  #   end
+  # end
 
-  describe "DELETE /destroy" do
-    it "destroys the requested financial_transaction" do
-      financial_transaction = FinancialTransaction.create! valid_attributes
-      expect {
-        delete financial_transaction_url(financial_transaction), headers: valid_headers, as: :json
-      }.to change(FinancialTransaction, :count).by(-1)
-    end
-  end
+  # describe "DELETE /destroy" do
+  #   it "destroys the requested financial_transaction" do
+  #     financial_transaction = FinancialTransaction.create! valid_attributes
+  #     expect {
+  #       delete financial_transaction_url(financial_transaction), headers: valid_headers, as: :json
+  #     }.to change(FinancialTransaction, :count).by(-1)
+  #   end
+  # end
 end

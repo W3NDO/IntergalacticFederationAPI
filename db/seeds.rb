@@ -108,7 +108,7 @@ pp " \t building Transport transactions"
     pilot = Pilot.find(rand(1..3))
     FinancialTransaction.create(
         description: "Transporting #{resource_types.sample} from #{origin} to #{destination}",
-        transaction_type: 1,
+        transaction_type: "resource_transport",
         amount: rand(100..500),
         pilot_id: rand(1..3),
         destination_planet_id: Planet.find_by(name: destination).id,
@@ -124,7 +124,7 @@ pp " \t building Fuel Refill transactions"
     pilot = Pilot.find(rand(1..3))
     FinancialTransaction.create(
         description: "Refuelling at #{origin}",
-        transaction_type: 2,
+        transaction_type: "fuel_refill",
         amount: rand(100..500),
         pilot_id: rand(1..3),
         origin_planet_id: Planet.find_by(name: origin).id,
