@@ -32,6 +32,7 @@ https://gist.github.com/talyssonoc/fa8094bc4f87ecee9f483f5fbc16862c You can find
  valid planets = ["andvari", "aqua", "calas", "demeter"]
 
  ## FEAT 1: Add pilots and ships to the system
+ 1. PILOTS
  ### POST request to `/pilots` to create a new pilot
  - endpoint:  `POST /pilots`
  - some valid ceritification that pass Luhn validations [1999939, 1999948, 1999957, 1999966, 1999975, 1999984. 1999993]
@@ -144,4 +145,101 @@ https://gist.github.com/talyssonoc/fa8094bc4f87ecee9f483f5fbc16862c You can find
     "message": "Pilot successfully deleted"
    }
    ```
-   
+
+2. SHIPS
+ ### POST request to `/ships` to create a new ship
+ - endpoint:  `POST /ships`
+ - ships require there to be a pilot for them to be valid. A ship is invalid without a pilot id attached to it. 
+ - accepts a JSON object format: 
+   ```
+   "ship":{
+      "name": string, 
+      "weigh_capacity": non-negative number,
+      "fuel_capacity": non-negative number,
+      "fuel_level": non-negative number,
+      "pilot_id": a valid pilot ID
+   }
+   ```
+- returns an object with the new pilots data:
+   ```
+   {
+      "name": "Normandy", 
+      "weigh_capacity": 700,
+      "fuel_capacity": 600,
+      "fuel_level": 400,
+      "pilot_id": 1
+   }
+   ```
+
+### GET request to `/ships` to return all pilots
+- endpoint `GET /ships`
+- returns an array of all pilots within the system, for instance:
+   ```
+   [
+      {
+         "id": 1
+         "name": "Normandy", 
+         "weigh_capacity": 700,
+         "fuel_capacity": 600,
+         "fuel_level": 400,
+         "pilot_id": 1
+      },
+      {
+         "id": 2
+         "name": "Normandy", 
+         "weigh_capacity": 700,
+         "fuel_capacity": 600,
+         "fuel_level": 400,
+         "pilot_id": 1
+      },
+   ]
+   ```
+
+### GET request to `/ships/:id` will return the ships data or a 404 if the ship does not exist
+- endpoint `GET /ships/:id` (eg: `/ships/1)
+- returns: 
+   ```
+   {
+      "id": 1
+      "name": "Normandy", 
+      "weigh_capacity": 700,
+      "fuel_capacity": 600,
+      "fuel_level": 400,
+      "pilot_id": 1
+   }
+   ```
+
+
+### PUT/PATCH request to `/ships/:id` will update the pilots data
+- endpoint ` PUT /ships/:id`
+- accepts a JSON object format: 
+   ```
+   "ship":{
+      "name": string, 
+      "weigh_capacity": non-negative number,
+      "fuel_capacity": non-negative number,
+      "fuel_level": non-negative number,
+      "pilot_id": a valid pilot ID
+   }
+   ```
+
+- returns a JSON object with the updated parameters
+   ```
+   {
+      "id": 1
+      "name": "Normandy", 
+      "weigh_capacity": 700,
+      "fuel_capacity": 600,
+      "fuel_level": 400,
+      "pilot_id": 1
+   }
+   ```
+
+### DELETE request to `/pilots/:id` will remove the pilot from the system.
+- endpoint `DELETE /pilots/:id`
+- returns a JSON message
+   ```
+   {
+    "message": "Ship successfully deleted"
+   }
+   ```
