@@ -43,7 +43,7 @@ pp "#{Planet.count} planets created"
 pp ">>>>> Seeding Pilots"
 
 pilot_names = ["Jean Luc Piccard", "Jane Shephard", "Jack Sparrow"]
-valid_certifications = [199992, 199984, 199836 ]
+valid_certifications = [1999939, 1999948, 1999957, ]
 pilot_names.each_with_index do |pilot, index|
     Pilot.create(
         name: pilot,

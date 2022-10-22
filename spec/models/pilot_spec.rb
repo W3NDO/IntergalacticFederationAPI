@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Pilot, type: :model do
-  let(:pilot) {Pilot.new(certification: 149997, name: "Kirk", age: 24, location_planet: "Calas")}
-  let(:invalid_pilot) {Pilot.new(certification: 149998, age: 26, location_planet: "Calas")}
+  let(:pilot) {Pilot.new(certification: 1999984, name: "Kirk", age: 24, location_planet: "Calas")}
+  let(:invalid_pilot) {Pilot.new(certification: 1999993, age: 26, location_planet: "Calas")}
 
   it "Ensures that the pilot validations pass" do
     expect(pilot.valid?).to be true

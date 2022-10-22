@@ -56,14 +56,15 @@ class PilotsController < ApplicationController
     def certificate_valid?(certification)
         # validates that the certification is legitimate using Luhn Validation
         return false unless certification
+        return false if certification.digits.length <7
         digits = certification.to_i&.digits
         digits.each_with_index do |num, index|
             if index.odd?
-                temp = digits[6-index]*2
+                temp = digits[7-index]*2
                 while temp > 9 do
                     temp = temp.digits.sum
                 end
-                digits[6-index] = temp
+                digits[7-index] = temp
             end
         end
         digits.sum % 10 == 0
