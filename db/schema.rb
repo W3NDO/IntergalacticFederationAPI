@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_21_204907) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_22_020755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,7 +32,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_204907) do
     t.string "location_planet"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "credits"
+    t.integer "credits_cents", default: 0, null: false
+    t.string "credits_currency", default: "USD", null: false
   end
 
   create_table "planets", force: :cascade do |t|

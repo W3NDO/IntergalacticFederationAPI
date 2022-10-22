@@ -6,7 +6,8 @@ RSpec.describe "/pilots", type: :request do
       certification: 199992, 
       name: "Kirk", 
       age: 24, 
-      location_planet: "Calas"
+      location_planet: "Calas",
+      credits_cents: 120.30
     }
   }
 
@@ -15,7 +16,8 @@ RSpec.describe "/pilots", type: :request do
       certification: 199995, 
       name: "Kirk", 
       age: 17, 
-      location_planet: "Calas"
+      location_planet: "Calas",
+      credits_cents: "hello"
     }
   }
 
@@ -80,7 +82,8 @@ RSpec.describe "/pilots", type: :request do
           certification: 199992, 
           name: "Jean Luc Piccard", 
           age: 24, 
-          location_planet: "Calas"
+          location_planet: "Calas",
+          credits_cents: 120
         }
       }
 
