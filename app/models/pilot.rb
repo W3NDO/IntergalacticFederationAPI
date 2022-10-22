@@ -5,5 +5,5 @@ class Pilot < ApplicationRecord
     
     validates :certification, presence: true, uniqueness: true
     validates :name, presence: true
-    validates :age, comparison: { greater_than: 18 }       
+    validates :age, comparison: { greater_than: 17 }       
 end

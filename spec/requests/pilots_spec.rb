@@ -3,17 +3,17 @@ require 'rails_helper'
 RSpec.describe "/pilots", type: :request do
   let(:valid_attributes) {
     {
-      certification: 199992, 
+      certification: 199935, 
       name: "Kirk", 
       age: 24, 
-      location_planet: "Calas",
+      location_planet: "calas",
       credits_cents: 120.30
     }
   }
 
   let(:invalid_attributes) {
     {
-      certification: 199995, 
+      certification: 199935, 
       name: "Kirk", 
       age: 17, 
       location_planet: "Calas",
@@ -79,7 +79,7 @@ RSpec.describe "/pilots", type: :request do
     context "with valid parameters" do
       let(:new_attributes) {
         {
-          certification: 199992, 
+          certification: 199935, 
           name: "Jean Luc Piccard", 
           age: 24, 
           location_planet: "Calas",

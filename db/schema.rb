@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_22_020755) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_22_032414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_22_020755) do
     t.datetime "updated_at", null: false
     t.integer "value_cents", default: 0, null: false
     t.string "value_currency", default: "USD", null: false
+    t.string "status"
+  end
+
+  create_table "financial_transactions", force: :cascade do |t|
+    t.text "description"
+    t.string "transaction_hash"
+    t.integer "amount"
+    t.string "ship_name"
+    t.string "pilot_certification"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "value_cents", default: 0, null: false
+    t.string "value_currency", default: "USD", null: false
+    t.integer "pilot_id"
+    t.integer "ship_id"
+    t.integer "origin_planet_id"
+    t.integer "destination_planet_id"
+    t.string "transaction_type"
+    t.string "transaction_origin_planet"
+    t.string "transaction_destination_planet"
   end
 
   create_table "pilots", force: :cascade do |t|
@@ -58,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_22_020755) do
     t.integer "pilot_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
   end
 
 end

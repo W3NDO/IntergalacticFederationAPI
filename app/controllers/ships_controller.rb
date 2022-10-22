@@ -17,7 +17,7 @@ class ShipsController < ApplicationController
 
   # POST /ships
   def create
-    render json: {message: "fuel level can not exceed fuel capacity"}, status: :unprocessable_entity if (ship_params[:fuel_level] > ship_params[:fuel_capacity])
+    render json: {message: "fuel level can not exceed fuel capacity"}, status: :unprocessable_entity and return if (ship_params[:fuel_level] > ship_params[:fuel_capacity])
     @ship = Ship.new(ship_params)
     @ship.pilot = Pilot.find(ship_params[:pilot_id])
 
@@ -30,6 +30,7 @@ class ShipsController < ApplicationController
 
   # PATCH/PUT /ships/1
   def update
+    render json: {message: "fuel level can not exceed fuel capacity"}, status: :unprocessable_entity and return if (ship_params[:fuel_level] > ship_params[:fuel_capacity])
     if @ship.update(ship_params)
       render json: {data: @ship, message: "ship successfully updated"}, status: :ok
     else
@@ -54,6 +55,6 @@ class ShipsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def ship_params
-    params.require(:ship).permit(:weight_capacity, :fuel_capacity, :fuel_level, :pilot_id)
+    params.require(:ship).permit(:weight_capacity, :fuel_capacity, :fuel_level, :pilot_id, :name)
   end
 end

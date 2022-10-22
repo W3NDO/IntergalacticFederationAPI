@@ -7,24 +7,24 @@ https://gist.github.com/talyssonoc/fa8094bc4f87ecee9f483f5fbc16862c You can find
  REFUELING TRANSACTION
 ```
  financial_transaction: {
-     description: "Fuel refill at Calas",
-     type: 2,
-     amount: 123,
-     origin_planet: "calas",
-     ship: "USS Discovery",
-     pilot: "199992"
+    description: "Fuel refill at Calas",
+    transaction_type: 2,
+    amount: 123,
+    pilot_id: 1,
+    origin_planet_id: 2,
+    ship_id: 1    
  }
  ```
  
  TRANSPORT TRANSACTION
 ```
  financial_transaction: {
-     description: "Transporting minerals to Andvari",
-     type: 1,
-     amount: 123,
-     origin_planet: "calas",
-     destination_planet: "andvari"
-     ship: "USS Discovery",
-     pilot: "199992"
- }
+    description: "Transporting minerals to Andvari",
+    transaction_type: 1,
+    amount: 123,
+    pilot_id: 1,
+    destination_planet_id: 1,
+    origin_planet_id: 2,
+    ship_id: 1    
+}
  ```

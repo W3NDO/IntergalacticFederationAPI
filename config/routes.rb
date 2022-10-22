@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :financial_transactions, only: [:show, :create, :index]
   resources :planets, only: [:show, :index, :update]
   resources :contracts
   resources :ships
