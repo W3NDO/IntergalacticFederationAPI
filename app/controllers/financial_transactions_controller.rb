@@ -46,6 +46,6 @@ class FinancialTransactionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def financial_transaction_params
-      params.require(:financial_transaction).permit(:description, :type, :transaction_hash, :amount, :origin_planet, :destination_planet, :ship, :pilot)
+      params.require(:financial_transaction).permit(:description, :type, :transaction_hash, :amount, :origin_planet, :destination_planet, :ship_name, :pilot_certification)
     end
 end

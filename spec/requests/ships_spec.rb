@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe "/ships", type: :request do
-  let(:pilot){Pilot.create(certification: 199992, name: "Kirk", age: 24, location_planet: "Calas")}
+  let(:pilot){Pilot.create!(certification: 199877, name: "Kirk", age: 24, location_planet: "Calas")}
   let(:valid_attributes) {
     {
       weight_capacity: 100, 
       fuel_capacity: 120, 
       fuel_level: 80, 
+      name: "Normandy",
       pilot_id: pilot.id
     }
   }

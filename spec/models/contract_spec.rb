@@ -8,6 +8,7 @@ RSpec.describe Contract, type: :model do
         payload: "minerals",
         origin_planet: "Calas",
         destination_planet: "Andvari",
+        status: 1,
         value_cents: 300
       )
     end

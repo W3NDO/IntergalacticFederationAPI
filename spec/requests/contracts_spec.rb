@@ -20,9 +20,10 @@ RSpec.describe "/contracts", type: :request do
     {
       :description=> "Kirk moved minerals worth 300 from Calas to Andvari",
       :payload=> "minerals",
-      :origin_planet=> "Calas",
-      :destination_planet=> "Andvari",
-      :value_cents=> 300
+      :origin_planet=> "calas",
+      :destination_planet=> "andvari",
+      :value_cents=> 300,
+      :status => 0
     }
   }
 
@@ -30,9 +31,10 @@ RSpec.describe "/contracts", type: :request do
     {
       :description=> "Kirk moved minerals worth 300 from Calas to Andvari",
       :payload=> "element zero",
-      :origin_planet=> "Calas",
-      :destination_planet=> "Dathomir",
-      :value_cents=> -1
+      :origin_planet=> "calas",
+      :destination_planet=> "dathomir",
+      :value_cents=> -1,
+      :status => 1
     }
   }
 
@@ -100,9 +102,10 @@ RSpec.describe "/contracts", type: :request do
         {
           :description=> "Kirk moved food worth 500 from Calas to Andvari",
           :payload=> "minerals",
-          :origin_planet=> "Calas",
-          :destination_planet=> "Andvari",
-          :value_cents=> 300
+          :origin_planet=> "calas",
+          :destination_planet=> "andvari",
+          :value_cents=> 40,
+          :status => 1
         }
       }
 
