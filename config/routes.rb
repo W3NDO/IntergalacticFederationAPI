@@ -12,8 +12,8 @@ Rails.application.routes.draw do
   post '/contracts/accept', to: "contracts#accept"
   post '/contracts/:id/accept', to: "contracts#accept"
 
-  post '/contracts/fulfil', to: "contracts#fulfil_contract"
-  post '/contracts/:id/fulfil', to: "contracts#fulfil_contract"
+  post '/contracts/fulfill', to: "contracts#fulfill_contract"
+  post '/contracts/:id/fulfill', to: "contracts#fulfill_contract"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # Defines the root path route ("/")
   # root "articles#index"

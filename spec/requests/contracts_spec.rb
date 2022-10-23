@@ -315,36 +315,170 @@ RSpec.describe "/contracts", type: :request do
     end
   end
 
-  describe "POST /fulfil" do
-    xit "rasises pilot required error" do
+  describe "POST /fulfill" do
+    let(:pilot){Pilot.create!(
+      certification: 1999083, 
+      name: "Kirk", 
+      age: 24, 
+      location_planet: "Calas", 
+      credits_cents: 300)      
+    }
+    let(:ship){Ship.create!(
+      name: "Tempest",
+      weight_capacity: 100,
+      fuel_capacity: 300,
+      fuel_level: 100,
+      pilot_id: pilot.id
+    )}
+    let(:planet_1){Planet.create({
+      name: "calas",
+        resources_sent: {"water": 10},
+        resources_received: {"food": 10}
+    })}
+    let(:planet_2){Planet.create({
+      name: "andvari",
+        resources_sent: {"water": 30},
+        resources_received: {"food": 30}
+    })}
+    let(:transaction){FinancialTransaction.create!(
+      description: "Kirk is transporting food from calas to andvari",
+      transaction_hash: "2a9860857a58319fe5ee322f6157b337",
+      amount: 120,
+      ship_name: "Tempest",
+      pilot_certification: 1999083,
+      value_cents: 120,
+      pilot_id: pilot.id,
+      ship_id: ship.id,
+      origin_planet_id: planet_1.id,
+      destination_planet_id: planet_2.id
+    )}
+    let(:contract){Contract.create!(
+      :description=> "Kirk moved food worth 120 from Calas to Andvari",
+      :payload=> "food",
+      :origin_planet=> "calas",
+      :destination_planet=> "andvari",
+      :value_cents=> 40,
+      :status => "open",
+      :financial_transaction_id => transaction.id
+    )
+    }
+    let(:resource){Resource.create!(
+      {
+        name: "food",
+        weight: 120,
+        contract_id: contract.id
+      })
+    }
+    
+    let(:fulfill_attributes){
+      {
+        contract:{
+          pilot_id: pilot.id,
+          contract_id: contract.id
+        }
+      }
+    }
+
+    let(:pilot_missing){
+      {
+        contract:{
+          contract_id: contract.id
+        }
+      }
+    }
+    let(:contract_missing){
+      {
+        contract:{
+          pilot_id: pilot.id
+        }
+      }
+    }
+
+    it "rasises pilot required error" do
+      post contracts_fulfill_url(pilot_missing), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("A pilot is required")
     end
 
-    xit "raises contract required error" do
+    it "raises contract required error" do
+      post contracts_fulfill_url(contract_missing), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("A contract is required")
     end
 
-    xit "return pilot not found error" do
+    it "return pilot not found error" do
+      fulfill_attributes[:contract][:pilot_id] = 999
+      post contracts_fulfill_url(fulfill_attributes), as: :json
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Pilot does not exist")
     end
 
-    xit "returns contract not found error" do
-    end
-
-    xit "return pilot not on planet error" do
+    it "returns contract not found error" do
+      fulfill_attributes[:contract][:contract_id] = 999
+      post contracts_fulfill_url(fulfill_attributes), as: :json
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract does not exist")
     end
 
     xit "raises contract closed error" do
+      contract.closed!
+      post contracts_fulfill_url(fulfill_attributes), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract can not be accepted as it is already closed")
     end
 
-    xit "raises contract open error" do
+    it "raises contract not active error" do
+      contract.open!
+      post contracts_fulfill_url(fulfill_attributes), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract is not active")
+    end
+
+    it "raises no transaction found error" do
+      contract.active!
+      contract.update(financial_transaction_id: nil)
+      contract.reload
+      post contracts_fulfill_url(fulfill_attributes), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract does not have a financial transaction associated with it")
     end
 
     describe "contract is fulfilled" do
-      xit "changes the pilots credit" do
+      it "changes the pilots credit" do
+        contract.active!
+        contract.update(financial_transaction_id: transaction.id)
+        post contracts_fulfill_url(fulfill_attributes), as: :json
+        body = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        pilot.reload
+        expect(pilot.credits_cents).to eq 420
       end
 
-      xit "changes the transaction description" do
+      it "changes the transaction description" do
+        contract.active!
+        contract.update(financial_transaction_id: transaction.id)
+        post contracts_fulfill_url(fulfill_attributes), as: :json
+        body = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        transaction.reload
+        expect(transaction.description).to eq("Kirk successfully transported food from calas to andvari")
       end
 
-      xit "changes the contract status to closed" do
+      it "changes the contract status to closed" do
+        contract.active!
+        contract.update(financial_transaction_id: transaction.id)
+        post contracts_fulfill_url(fulfill_attributes), as: :json
+        body = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        contract.reload
+        expect(contract.closed?).to be true
       end
 
       xit "changes the destination planet received status" do

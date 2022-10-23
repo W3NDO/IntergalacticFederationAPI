@@ -17,7 +17,7 @@ RSpec.describe "/planets", type: :request do
     it "renders a successful response" do
       Planet.create({
         name: "andvari",
-        resources_sent: {"water": 10},
+          resources_sent: {"water": 10},
           resources_received: {"food": 10}
       })
       planet = Planet.first

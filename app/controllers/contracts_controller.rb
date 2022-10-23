@@ -74,9 +74,9 @@ class ContractsController < ApplicationController
     unless contract_feasible[0]
       case contract_feasible[1]
       when "route_block"
-        render json: {error: "Unable to fulfil contract since travel from #{origin_planet.name} to #{destination_planet.name} is blocked"}, status: :unprocessable_entity and return
+        render json: {error: "Unable to fulfill contract since travel from #{origin_planet.name} to #{destination_planet.name} is blocked"}, status: :unprocessable_entity and return
       when "fuel"
-        render json: {error: "Unable to fulfil contract since the ship #{ship.name} does not have enough fuel"}
+        render json: {error: "Unable to fulfill contract since the ship #{ship.name} does not have enough fuel"}
       end
     end
 
@@ -106,14 +106,38 @@ class ContractsController < ApplicationController
       transaction_hash: create_hash
     )
     if transaction.save
+      contract.update(financial_transaction_id: transaction.id)
       render json: {message: "Contract accepted by #{pilot.name} of the #{ship.name}", transaction: transaction}, status: :ok and return
     else
       render json: {error: "unable to complete transaction due to a server error"}, status: :internal_server_error and return
     end
   end
 
-  def fulfil_contract
-    render json: {message: "Contract fulfiled, pilot has been credited"}
+  def fulfill_contract
+    render json: {error: "A pilot is required"}, status: :unprocessable_entity and return unless accept_params[:pilot_id]
+    render json: {error: "A contract is required"}, status: :unprocessable_entity and return unless accept_params[:contract_id] or params[:id]
+
+    pilot = Pilot.find(accept_params[:pilot_id]) rescue nil
+    contract = Contract.find(accept_params[:contract_id]) rescue nil
+    unless contract
+      contract = Contract.find(params[:id]) rescue nil
+    end
+
+    render json: {error: "Pilot does not exist"}, status: :not_found and return unless pilot
+    render json: {error: "Contract does not exist"}, status: :not_found and return unless contract
+
+    render json: {error: "Contract is not active"}, status: :unprocessable_entity and return unless contract.active?
+    render json: {error: "Contract can not be fulfilled as it is already closed"}, status: :unprocessable_entity and return if contract.closed?
+
+    transaction = FinancialTransaction.find(contract.financial_transaction_id) rescue nil
+    render json: {error: "Contract does not have a financial transaction associated with it"}, status: :unprocessable_entity and return unless transaction
+
+    transaction.update(description: transaction.description.gsub("is transporting", "successfully transported"))
+    planet = Planet.find(transaction.destination_planet_id)
+    contract.closed!
+    pilot.update(credits_cents: pilot.credits_cents + transaction.value_cents)
+    # planet.update(resources)
+    render json: {message: "Contract fulfilled, pilot has been credited", data: transaction}, status: :ok
   end
 
 
