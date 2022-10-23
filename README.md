@@ -312,3 +312,70 @@ To get all transport contracts, you send  GET request to `/contracts`
 ## FEAT 4 travel between planets
 - requires a ship ID, origin planet ID and destination planet name. 
 - if the ship's current location is not the same as the destination planet, it will have to travel from its current location to the origin planet, then the destination planet. If this will consume more fuel than the ship has, then the system deems travel impossible. 
+
+- endpoint `POST /travel`
+- accepts a JSON Object with the following fields
+```
+{
+   "travel": {
+      "ship_id": integer,
+      "origin_planet_id": integer,
+      "destination_planet_id": integer
+   }
+}
+```
+
+- if successfull, return 200 success and a JSON object specifying where you traveled from and where you travelled to and onboard what ship
+```
+{
+    "message": "Successfully flew from calas to andvari aboard the USS Orville"
+}
+```
+
+- if not successfull it will specify why you could not travel
+```
+{
+    "error": "Travel between demeter and andvari is not possible"
+}
+```
+
+### FEAT 5 Register a refill of fuel `POST /refill`
+- requires the following fields in the POST request
+   - a ship
+   - planet of refill
+   - units of fuel
+
+   ```
+   {
+      "refill": {
+         "ship_id": 1,
+         "planet_id": 2,
+         "units_of_fuel": 10
+      }
+   }
+   ```
+- Returns a transaction object in JSON format
+```
+{
+    "data": {
+        "id": 8,
+        "description": "The ship USS Orville refuelled at aqua",
+        "transaction_hash": "3f9c3ab33de9cd0d96f67f9f1beef48b",
+        "amount": 10,
+        "ship_name": "USS Orville",
+        "pilot_certification": "199992",
+        "created_at": "2022-10-23T02:01:58.236Z",
+        "updated_at": "2022-10-23T02:01:58.236Z",
+        "value_cents": 70,
+        "value_currency": "USD",
+        "pilot_id": 1,
+        "ship_id": 1,
+        "origin_planet_id": 2,
+        "destination_planet_id": null,
+        "transaction_type": "fuel_refill",
+        "transaction_origin_planet": "aqua",
+        "transaction_destination_planet": null
+    }
+}
+```
+It will also return a variety of errors if the ship or planet doesn't exist or if the value you passed into units of fuel can not be cast into a float

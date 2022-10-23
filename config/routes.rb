@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :pilots
 
   post '/travel', to: 'travel#create'
+  post '/refill', to: 'financial_transactions#fuel_refill'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # Defines the root path route ("/")
   # root "articles#index"

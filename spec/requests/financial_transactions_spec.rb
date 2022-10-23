@@ -97,54 +97,89 @@ RSpec.describe "/financial_transactions", type: :request do
     end
   end
 
-  # describe "PATCH /update" do
-  #   context "with valid parameters" do
-  #     let(:new_attributes) {
-  #       {
-  #         description: "Transporting minerals from #{planet_origin.name} to #{planet_destination.name}",
-  #         transaction_type: "fuel_refill",
-  #         amount: rand(100..500),
-  #         pilot_id: pilot.id,
-  #         destination_planet_id: planet_destination.id,
-  #         origin_planet_id: planet_origin.id,
-  #         ship_id: ship.id
-  #       }
-  #     }
+  describe "refill" do
+    let(:refill_attributes) {
+      {
+        refill: {
+            ship_id: 1,
+            planet_id: 2,
+            units_of_fuel: 3
+        }
+      }
+    }
 
-  #     it "updates the requested financial_transaction" do
-  #       financial_transaction = FinancialTransaction.create! valid_attributes
-  #       patch financial_transaction_url(financial_transaction),
-  #             params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
-  #       financial_transaction.reload
-  #       skip("Add assertions for updated state")
-  #     end
+    it "raises missing ship error" do
+        refill_attributes[:refill][:ship_id] = nil
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Ship is required")
+    end
 
-  #     it "renders a JSON response with the financial_transaction" do
-  #       financial_transaction = FinancialTransaction.create! valid_attributes
-  #       patch financial_transaction_url(financial_transaction),
-  #             params: { financial_transaction: new_attributes }, headers: valid_headers, as: :json
-  #       expect(response).to have_http_status(:ok)
-  #       expect(response.content_type).to match(a_string_including("application/json"))
-  #     end
-  #   end
+    it "raises missing planet error" do
+        refill_attributes[:refill][:planet_id] = nil
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Planet is required")
+    end
 
-  #   context "with invalid parameters" do
-  #     it "renders a JSON response with errors for the financial_transaction" do
-  #       financial_transaction = FinancialTransaction.create! valid_attributes
-  #       patch financial_transaction_url(financial_transaction),
-  #             params: { financial_transaction: invalid_attributes }, headers: valid_headers, as: :json
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.content_type).to match(a_string_including("application/json"))
-  #     end
-  #   end
-  # end
+    it "raises missing destination planet error" do
+        refill_attributes[:refill][:units_of_fuel] = nil
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Number of units is required")
+    end
 
-  # describe "DELETE /destroy" do
-  #   it "destroys the requested financial_transaction" do
-  #     financial_transaction = FinancialTransaction.create! valid_attributes
-  #     expect {
-  #       delete financial_transaction_url(financial_transaction), headers: valid_headers, as: :json
-  #     }.to change(FinancialTransaction, :count).by(-1)
-  #   end
-  # end
+    it "returns ship not found error" do
+        refill_attributes[:refill][:ship_id] = 999
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Ship does not exist")
+    end
+
+    it "returns origin planet not found error" do
+        refill_attributes[:refill][:planet_id] = 999
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Planet does not exist")
+    end
+
+    it "units not a number error" do
+        refill_attributes[:refill][:units_of_fuel] = "cheese"
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Fuel Units is required to be an number")
+    end
+
+    let(:pilot) {Pilot.first}
+    let(:ship) {Ship.create!(pilot_id: pilot.id, name: "Tempest", fuel_capacity: 30, fuel_level: 10, weight_capacity: 10 )}
+    let(:origin_planet) {Planet.create!(name: "aqua", resources_sent: 0, resources_received: 0)}
+    it "returns can't afford error" do
+        pilot.update!(credits_cents: 10)
+        refill_attributes[:refill][:ship_id] = ship.id
+        refill_attributes[:refill][:origin_planet_id] = origin_planet.id
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+        body = JSON.parse(response.body)
+        expect(body["error"]).to eq("Ship's pilot can not afford to buy #{refill_attributes[:refill][:units_of_fuel]} units of fuel")
+    end
+
+    it "returns successful travel" do
+        post refill_url, params: refill_attributes, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type).to match(a_string_including("application/json"))
+    end
+  end
 end

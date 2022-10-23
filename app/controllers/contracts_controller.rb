@@ -42,10 +42,11 @@ class ContractsController < ApplicationController
   def destroy
     if @contract.destroy
       render json: {message: "Contract successfully deleted"}, status: :ok
-  else
-    render json: {message:"Failed to destroy contract"}, status: :unprocessable_entity
+    else
+      render json: {message:"Failed to destroy contract"}, status: :unprocessable_entity
+    end
   end
-  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

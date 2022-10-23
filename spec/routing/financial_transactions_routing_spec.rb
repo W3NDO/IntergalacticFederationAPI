@@ -14,5 +14,9 @@ RSpec.describe FinancialTransactionsController, type: :routing do
     it "routes to #create" do
       expect(post: "/financial_transactions").to route_to("financial_transactions#create")
     end
+
+    it "routes /refill to #fuel_refill" do
+      expect(post: "/refill").to route_to("financial_transactions#fuel_refill")
+    end
   end
 end
