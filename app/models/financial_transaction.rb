@@ -6,6 +6,7 @@ class FinancialTransaction < ApplicationRecord
     belongs_to :ship
     belongs_to :origin_planet, class_name: "Planet"
     belongs_to :destination_planet, class_name: "Planet", optional: true
+    has_one :contract
 
     enum :transaction_type, :resource_transport => "resource_transport", :fuel_refill => "fuel_refill", default: :resource_transport
 

@@ -34,7 +34,19 @@ pp ">>>>> Seeding Planets"
 
 planets = ["andvari", "aqua", "calas", "demeter"]
 planets.each do |planet|
-    Planet.create(name: planet, resources_received: 0, resources_sent: 0)
+    Planet.create(
+        name: planet, 
+        resources_received: {
+            "minerals": 0,
+            "food": 0,
+            "water": 0
+        }, 
+        resources_sent: {
+            "minerals": 0,
+            "food": 0,
+            "water": 0
+        }
+    )
 end
 
 pp "#{Planet.count} planets created"
@@ -78,7 +90,7 @@ pp ">>>>> Seeding Contracts"
     destination = valid_routes[origin].keys.sample
     resource = resource_types.sample
     Contract.create(
-        description: "#{pilot_names.sample} transported #{resource} from #{origin} to #{destination} ",
+        description: "Transport #{resource} from #{origin} to #{destination}",
         payload: resource,
         origin_planet: origin,
         destination_planet: destination,

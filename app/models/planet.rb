@@ -34,4 +34,14 @@ class Planet < ApplicationRecord
         return true if TRAVEL_ADJACENCY_LIST[origin.downcase].keys.include?(destination.downcase) and TRAVEL_ADJACENCY_LIST[origin.downcase][destination.downcase] < fuel
         false
     end
+
+    def self.travellable_with_fuel?(origin, destination, fuel)
+        return [false, "route_block"] if TRAVEL_ADJACENCY_LIST[origin.downcase][destination.downcase] == -1
+        return [false, "fuel"] if TRAVEL_ADJACENCY_LIST[origin.downcase].keys.include?(destination.downcase) and TRAVEL_ADJACENCY_LIST[origin.downcase][destination.downcase] > fuel
+        return [true, nil]
+    end
+
+    def update_totals
+        # sent = self.
+    end
 end

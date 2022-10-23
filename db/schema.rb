@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_22_032414) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_23_044755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,7 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_22_032414) do
     t.datetime "updated_at", null: false
     t.integer "value_cents", default: 0, null: false
     t.string "value_currency", default: "USD", null: false
-    t.string "status"
+    t.string "status", default: "open"
+    t.integer "financial_transaction_id"
   end
 
   create_table "financial_transactions", force: :cascade do |t|
@@ -58,10 +59,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_22_032414) do
 
   create_table "planets", force: :cascade do |t|
     t.string "name"
-    t.integer "resources_received"
-    t.integer "resources_sent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "resources_sent"
+    t.jsonb "resources_received"
   end
 
   create_table "resources", force: :cascade do |t|
@@ -69,6 +70,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_22_032414) do
     t.integer "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "contract_id"
   end
 
   create_table "ships", force: :cascade do |t|

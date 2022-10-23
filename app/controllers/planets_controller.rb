@@ -26,7 +26,7 @@ class PlanetsController < ApplicationController
 
   # PATCH/PUT /planets/1
   def update
-    # check_castable(planet_params[:resources_sent], planet_params[:resources_received])
+
     if @planet.update(planet_params)
       render json: @planet
     else
@@ -45,9 +45,16 @@ class PlanetsController < ApplicationController
       @planet = Planet.find(params[:id])
     end
 
+    def update_values(new_values, old_values)
+      old_values.each do |k,v|
+        old_values[k] = old_values[k] + new_values.fetch(k, 0)
+      end
+      old_values
+    end
+
     # Only allow a list of trusted parameters through.
     def planet_params
-      params.require(:planet).permit(:name, :resources_received, :resources_sent)
+      params.require(:planet).permit(:name, :resources_received => [:food, :minerals, :water], :resources_sent => [:food, :minerals, :water])
     end
 
     def check_castable(sent, received)

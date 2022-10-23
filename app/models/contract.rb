@@ -2,7 +2,11 @@ class Contract < ApplicationRecord
     
     # before_save :check_validity
 
-    enum :status, open: "open", closed: "closed", default: :closed
+    belongs_to :financial_transaction, optional: true
+    has_many :resources
+    accepts_nested_attributes_for :resources, reject_if: ->(attributes){ attributes['name'].blank? }, allow_destroy: true
+
+    enum :status, open: "open", closed: "closed", active: "active", default: :closed
 
     validates :description, presence: true
     validates :payload, presence: true, inclusion: {in: %w(minerals water food), message: "%{value} is not a valid payload"}

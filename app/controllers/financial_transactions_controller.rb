@@ -109,13 +109,4 @@ class FinancialTransactionsController < ApplicationController
       params.require(:financial_transaction).permit(:description, :type, :transaction_hash, :transaction_type, :value_cents, :amount, :origin_planet_id, :destination_planet_id, :ship_id, :pilot_id)
     end
 
-    def create_hash() #v2
-      # return if params.keys.include?(:transaction_hash)
-      token = nil
-      loop do
-        token = SecureRandom.hex
-        break unless FinancialTransaction.all.pluck(:transaction_hash).include?(token)
-      end
-      token
-    end
 end

@@ -289,6 +289,27 @@ To get all transport contracts, you send  GET request to `/contracts`
     ]
    ```
 
+### Creating a new contract
+A contract requires that you nest in an object of the associated resources being transported. 
+- endpoint `POST /contracts`
+- accepts
+```
+   {
+      "contract": {
+         "description": string,
+         "payload": string, # type of resource
+         "origin_planet": string, # planet name in lowercase
+         "destination_planet": string, # planet name in lowercase
+         "value_cents": integer,
+         "status": string, # either open or closed
+         "resources_attributes": {
+               "name": string, type of resource, either minerals, water or food
+               "weight": integer
+         }
+      }
+   }
+```
+
 ## FEAT 3: List Open Contracts
 - endpoint `GET /contracts?status=open`
 - will return a list of open contracts, that looks like this
@@ -379,3 +400,19 @@ To get all transport contracts, you send  GET request to `/contracts`
 }
 ```
 It will also return a variety of errors if the ship or planet doesn't exist or if the value you passed into units of fuel can not be cast into a float
+
+### FEAT 6 Accept transport contracts
+Has 2 endpoints that would work for it 
+1. `POST /contracts/accept` which requires the contract id to be specified in the body of the request. 
+2. `POST /contracts/:id/accept` which has the contract id specified in the endpoint
+- requires a pilot who accepts the contract
+- requires a contract
+- will determine if the pilot is able to accept the contract
+
+
+### FEAT 7 Grant credits to pilot after fulfilling a contract
+Has 2 endpoints that would work for it 
+1. `POST /contracts/fulfil` which requires the contract id to be specified in the body of the request. 
+2. `POST /contracts/:id/fulfil` which has the contract id specified in the endpoint
+- requires a pilot who accepts the contract
+- requires a contract

@@ -17,8 +17,8 @@ RSpec.describe "/planets", type: :request do
     it "renders a successful response" do
       Planet.create({
         name: "andvari",
-        resources_sent: 10,
-        resources_received: 20
+        resources_sent: {"water": 10},
+          resources_received: {"food": 10}
       })
       planet = Planet.first
       get planet_url(planet), as: :json
@@ -32,29 +32,25 @@ RSpec.describe "/planets", type: :request do
       let(:new_attributes) {
         {
           name: "andvari",
-          resources_sent: 0.7,
-          resources_received: 20
+          resources_sent: {"water": 10},
+          resources_received: {"food": 10}
         }
       }
       let(:planet) {Planet.find_by(name: "andvari")}
 
       it "updates the requested planet" do
-        Planet.create!({
-          name: "andvari",
-          resources_sent: 10,
-          resources_received: 20
-        })
         patch planet_url(planet),
               params: { planet: new_attributes }, headers: valid_headers, as: :json
         planet.reload
-        expect(planet.resources_received).to eq 20
+
+        expect(planet.resources_received).to eq({"food"=>10})
       end
 
       it "renders a JSON response with the planet" do
         Planet.create!({
           name: "andvari",
-          resources_sent: 10,
-          resources_received: 0
+          resources_sent: {"water": 10},
+          resources_received: {"food": 0}
         })
         patch planet_url(planet),
               params: { planet: new_attributes }, headers: valid_headers, as: :json
@@ -68,8 +64,8 @@ RSpec.describe "/planets", type: :request do
       it "renders a JSON response with errors for the planet" do
         Planet.create!({
           name: "andvari",
-          resources_sent: 0,
-          resources_received: 0
+          resources_sent: {"water": 10},
+          resources_received: {"food": 0}
         })
         patch planet_url(planet),
               params: { planet: {name: "andvari", resources_received: "cheese", resources_sent: "cake"} }, headers: valid_headers, as: :json
