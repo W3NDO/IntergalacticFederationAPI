@@ -141,45 +141,175 @@ RSpec.describe "/contracts", type: :request do
     end
   end
 
-  describe "POST /accept" do
-    xit "rasises pilot required error" do
+  describe "POST /contracts/accept" do
+    let(:contract){Contract.create!(
+      :description=> "Kirk moved food worth 120 from Calas to Andvari",
+      :payload=> "food",
+      :origin_planet=> "calas",
+      :destination_planet=> "andvari",
+      :value_cents=> 40,
+      :status => "open",)
+    }
+    let(:resource){Resource.create!(
+      {
+        name: "food",
+        weight: 120,
+        contract_id: contract.id
+      })
+    }
+    let(:pilot){Pilot.create!(
+      certification: 1999083, 
+      name: "Kirk", 
+      age: 24, 
+      location_planet: "Calas", 
+      credits_cents: 300)      
+    }
+    let(:ship){Ship.create!(
+      name: "Tempest",
+      weight_capacity: 100,
+      fuel_capacity: 300,
+      fuel_level: 100,
+      pilot_id: pilot.id
+    )}
+    
+    let(:accept_attributes){
+      {
+        contract:{
+          pilot_id: pilot.id,
+          contract_id: contract.id
+        }
+      }
+    }
+
+    let(:pilot_missing){
+      {
+        contract:{
+          contract_id: contract.id
+        }
+      }
+    }
+    let(:contract_missing){
+      {
+        contract:{
+          pilot_id: pilot.id
+        }
+      }
+    }
+
+    it "rasises pilot required error" do
+      post contracts_accept_url(pilot_missing), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("A pilot is required")
     end
 
-    xit "raises contract required error" do
+    it "raises contract required error" do
+      post contracts_accept_url(contract_missing), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("A contract is required")
     end
 
-    xit "return pilot not found error" do
+    it "return pilot not found error" do
+      accept_attributes[:contract][:pilot_id] = 999
+      post contracts_accept_url(accept_attributes), as: :json
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Pilot does not exist")
     end
 
-    xit "returns contract not found error" do
-    end
-
-    xit "raises travel blocked error" do
-    end
-
-    xit "raises not enough fuel error" do
+    it "returns contract not found error" do
+      accept_attributes[:contract][:contract_id] = 999
+      post contracts_accept_url(accept_attributes), as: :json
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract does not exist")
     end
 
     xit "raises contract closed error" do
+      contract.closed!
+      post contracts_accept_url(accept_attributes), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract can not be accepted as it is already closed")
     end
 
-    xit "raises contract already active error" do
+    it "raises contract already active error" do
+      contract.active!
+      post contracts_accept_url(accept_attributes), as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body["error"]).to eq("Contract is already being executed")
     end
 
     describe "contract is accepted" do
-      xit "changes the ship fuel level" do
+      let(:contract){Contract.create!(
+        :description=> "Kirk moved food worth 120 from Calas to Andvari",
+        :payload=> "food",
+        :origin_planet=> "calas",
+        :destination_planet=> "andvari",
+        :value_cents=> 40,
+        :status => "open",)
+      }
+      let(:resource){Resource.create!(
+        {
+          name: "food",
+          weight: 120,
+          contract_id: contract.id
+        })
+      }
+      let(:pilot){Pilot.create!(
+        certification: 1999083, 
+        name: "Kirk", 
+        age: 24, 
+        location_planet: "calas", 
+        credits_cents: 300)      
+      }
+      let(:ship){Ship.create!(
+        name: "Tempest",
+        weight_capacity: 100,
+        fuel_capacity: 300,
+        fuel_level: 100,
+        pilot_id: pilot.id
+      )}
+      
+      let(:accept_attributes){
+        {
+          contract:{
+            pilot_id: pilot.id,
+            contract_id: contract.id
+          }
+        }
+      }
+
+      it "changes the pilots location" do
+        contract.open!
+        pilot.ship = ship
+        post contracts_accept_url(accept_attributes), as: :json
+        pilot.reload
+        expect(response).to have_http_status(:ok)
+        expect(pilot.location_planet).to eq("andvari")
+      end
+      
+
+      it "creates a new transaction" do
+        contract.open!
+        pilot.ship = ship
+        expect {
+          post contracts_accept_url(accept_attributes), as: :json
+        }.to change(FinancialTransaction, :count).by(1)
       end
 
-      xit "changes the pilots location" do
+      it "changes the contract status to active" do
+        contract.open!
+        pilot.ship = ship
+        post contracts_accept_url(accept_attributes), as: :json
+        contract.reload
+        expect(response).to have_http_status(:ok)
+        expect(contract.active?).to be true
       end
 
-      xit "creates a new transaction" do
-      end
-
-      xit "changes the contract status to active" do
-      end
-
-      xit "changes the origin planets sent" do
+      xit "changes the origin planets sent status" do
       end
 
     end

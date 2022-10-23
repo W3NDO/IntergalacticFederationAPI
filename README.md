@@ -409,6 +409,42 @@ Has 2 endpoints that would work for it
 - requires a contract
 - will determine if the pilot is able to accept the contract
 
+- accepts
+```
+   {
+      "contract": {
+         "pilot_id": integer,
+         "contract_id": integer,
+      }
+   }
+```
+
+- returns
+```
+{
+    "message": "Contract accepted by Jean Luc Piccard of the USS Orville",
+    "transaction": {
+        "id": 5,
+        "description": "Jean Luc Piccard is transporting water from calas to aqua",
+        "transaction_hash": "a69c2617d4451561b24facf24b562ae1",
+        "amount": 200,
+        "ship_name": "USS Orville",
+        "pilot_certification": "1999939",
+        "created_at": "2022-10-23T18:42:10.419Z",
+        "updated_at": "2022-10-23T18:42:10.419Z",
+        "value_cents": 393,
+        "value_currency": "USD",
+        "pilot_id": 1,
+        "ship_id": 1,
+        "origin_planet_id": 3,
+        "destination_planet_id": 2,
+        "transaction_type": "resource_transport",
+        "transaction_origin_planet": "calas",
+        "transaction_destination_planet": "aqua"
+    }
+}
+```
+
 
 ### FEAT 7 Grant credits to pilot after fulfilling a contract
 Has 2 endpoints that would work for it 

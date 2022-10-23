@@ -84,7 +84,9 @@ class ContractsController < ApplicationController
     # update the planet received
     # update pilot
     # update ship
-    ship.update(fuel_level: ship.fuel_level - Planet::TRAVEL_ADJACENCY_LIST[origin_planet.name][destination_planet.name])
+
+  
+    ship.update(fuel_level: ship.fuel_level - Planet::TRAVEL_ADJACENCY_LIST[origin_planet.name][destination_planet.name]) and pp "Updated ship fuel level to #{ship.fuel_level}"
     pilot.update(location_planet: destination_planet.name)
     contract.active! # sets the contract status to active. 
 
