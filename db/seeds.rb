@@ -30,8 +30,6 @@ valid_routes = {"andvari" => {
 }}
 
 # Planet seeds
-pp ">>>>> Seeding Planets"
-
 planets = ["andvari", "aqua", "calas", "demeter"]
 planets.each do |planet|
     Planet.create(
@@ -49,11 +47,8 @@ planets.each do |planet|
     )
 end
 
-pp "#{Planet.count} planets created"
 
 # pilot seeds
-pp ">>>>> Seeding Pilots"
-
 pilot_names = ["Jean Luc Piccard", "Jane Shephard", "Jack Sparrow"]
 valid_certifications = [1999939, 1999948, 1999957, ]
 pilot_names.each_with_index do |pilot, index|
@@ -66,9 +61,7 @@ pilot_names.each_with_index do |pilot, index|
     )
 end
 
-pp "#{Pilot.count} pilots created"
-
-
+# ship seeds
 ship_names = ["USS Orville", "Normandy", "Black Perl"]
 ship_names.each_with_index do |ship, index|
     Ship.create(
@@ -79,8 +72,8 @@ ship_names.each_with_index do |ship, index|
         fuel_level: rand(0..900)
     )
 end
-pp "#{Ship.count} ships created"
 
+# transport transaction seeds
 3.times do |t|
     origin = valid_routes.keys.sample
     destination = valid_routes[origin].keys.sample
@@ -97,7 +90,6 @@ pp "#{Ship.count} ships created"
         value_cents: rand(300..400)
     )    
 end
-pp "#{FinancialTransaction.count} Transport transactions created"
 
 # a fuel refill transaction
 4.times do
@@ -113,9 +105,8 @@ pp "#{FinancialTransaction.count} Transport transactions created"
         value_cents: rand(400..700)
     )
 end
-pp "#{FinancialTransaction.count} Fuel Refill transactions created"
 
-
+# Contract seeds
 3.times do |t|
     origin = valid_routes.keys.sample
     destination = valid_routes[origin].keys.sample
@@ -131,8 +122,8 @@ pp "#{FinancialTransaction.count} Fuel Refill transactions created"
         financial_transaction_id: (t+1)
     )
 end
-pp "#{Contract.count} contracts created"
 
+# resource seeds
 resource_types.each_with_index do |resource, index|
     Resource.create(
         name: resource,
@@ -140,4 +131,3 @@ resource_types.each_with_index do |resource, index|
         contract_id: index+1
     )
 end
-pp "#{Resource.count} resources created"

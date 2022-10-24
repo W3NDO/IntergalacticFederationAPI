@@ -21,3 +21,18 @@ To run the tests, enter the following command in your terminal
 bundle exec rspec spec
 ```
 This will seed your test database and run all the tests.
+
+If you want to run a specific test, you can use the command 
+```
+bundle exec rspec spec/path/to/test
+
+for instance 
+
+bundle exec rspec spec/models/pilot_spec.rb
+```
+
+Similarly, if you want to run a set of tests, say for the models, you pass the path to the folder containing that set of tests
+```
+bundle exec rspec path/to/directory
+```
+
