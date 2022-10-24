@@ -22,4 +22,26 @@ RSpec.describe Planet, type: :model do
       expect(Planet.travellable?("Aqua", "Andvari", 40 )).to be false
     end
   end
+
+  describe "updating totals of the planet" do
+    let(:new_sent){{"food"=>10, "water"=>50, "minerals"=>15}}
+    let(:new_received){{"food"=>100, "water"=>30, "minerals"=>10}}
+    let(:planet){ Planet.create!(
+      name: "andvari", 
+      resources_sent:{
+        "food"=>0, "water"=>0, "minerals"=>0
+      },
+      resources_received: {
+        "food"=>0, "water"=>0, "minerals"=>0
+      }
+      )}
+
+      it "updates the planet resources tally" do
+        expect(planet.update_totals(new_sent, new_received)).to be true
+        planet.reload
+        expect(planet.resources_sent).to eq({"food"=>10, "water"=>50, "minerals"=>15})
+        expect(planet.update_totals(new_sent, {})).to be true
+        expect(planet.update_totals({"chese" => 123}, new_received)).to be true
+      end
+  end
 end

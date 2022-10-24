@@ -14,7 +14,8 @@ Rails.application.routes.draw do
 
   post '/contracts/fulfill', to: "contracts#fulfill_contract"
   post '/contracts/:id/fulfill', to: "contracts#fulfill_contract"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  # Defines the root path route ("/")
-  # root "articles#index"
+
+  get '/reports', to: "reports#full_report"
+  get '/reports/pilots', to: "reports#get_pilots_report"
+  get '/reports/planets', to: "reports#get_planets_report"
 end

@@ -226,7 +226,7 @@ RSpec.describe "/contracts", type: :request do
       expect(body["error"]).to eq("Contract does not exist")
     end
 
-    xit "raises contract closed error" do
+    it "raises contract closed error" do
       contract.closed!
       post contracts_accept_url(accept_attributes), as: :json
       expect(response).to have_http_status(:unprocessable_entity)
@@ -284,6 +284,7 @@ RSpec.describe "/contracts", type: :request do
 
       it "changes the pilots location" do
         contract.open!
+        contract.resources = [resource]
         pilot.ship = ship
         post contracts_accept_url(accept_attributes), as: :json
         pilot.reload
@@ -294,6 +295,7 @@ RSpec.describe "/contracts", type: :request do
 
       it "creates a new transaction" do
         contract.open!
+        contract.resources = [resource]
         pilot.ship = ship
         expect {
           post contracts_accept_url(accept_attributes), as: :json
@@ -302,16 +304,13 @@ RSpec.describe "/contracts", type: :request do
 
       it "changes the contract status to active" do
         contract.open!
+        contract.resources = [resource]
         pilot.ship = ship
         post contracts_accept_url(accept_attributes), as: :json
         contract.reload
         expect(response).to have_http_status(:ok)
         expect(contract.active?).to be true
       end
-
-      xit "changes the origin planets sent status" do
-      end
-
     end
   end
 
@@ -350,7 +349,8 @@ RSpec.describe "/contracts", type: :request do
       pilot_id: pilot.id,
       ship_id: ship.id,
       origin_planet_id: planet_1.id,
-      destination_planet_id: planet_2.id
+      destination_planet_id: planet_2.id,
+      transaction_type: "resource_transport"
     )}
     let(:contract){Contract.create!(
       :description=> "Kirk moved food worth 120 from Calas to Andvari",
@@ -424,12 +424,12 @@ RSpec.describe "/contracts", type: :request do
       expect(body["error"]).to eq("Contract does not exist")
     end
 
-    xit "raises contract closed error" do
+    it "raises contract closed error" do
       contract.closed!
       post contracts_fulfill_url(fulfill_attributes), as: :json
       expect(response).to have_http_status(:unprocessable_entity)
       body = JSON.parse(response.body)
-      expect(body["error"]).to eq("Contract can not be accepted as it is already closed")
+      expect(body["error"]).to eq("Contract is not active")
     end
 
     it "raises contract not active error" do
@@ -481,7 +481,24 @@ RSpec.describe "/contracts", type: :request do
         expect(contract.closed?).to be true
       end
 
-      xit "changes the destination planet received status" do
+      it "changes the destination planet received status" do
+        contract.active!
+        contract.resources = [resource]
+        post contracts_fulfill_url(fulfill_attributes), as: :json
+        body = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        planet_2.reload
+        expect(planet_2.resources_received).to eq({"food" => 150})
+      end
+
+      it "updates the pilot totals tally" do
+        contract.active!
+        contract.resources = [resource]
+        post contracts_fulfill_url(fulfill_attributes), as: :json
+        body = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        pilot.reload
+        expect(pilot.totals).to eq({"food" => 120})
       end
 
     end

@@ -56,7 +56,7 @@ class TravelController < ApplicationController
                 if Planet::TRAVEL_ADJACENCY_LIST[current_location.name].keys.include?(destination_planet.name)
                     render json: {error: "Unable to travel from #{origin_planet.name} to #{destination_planet.name} due to low fuel"}, status: :unprocessable_entity and return
                 else
-                    render json: {error: "Unable to travel from #{origin_planet.name} to #{destination_planet.name} due an issue with the route"}, status: :unprocessable_entity and return
+                    render json: {error: ">>Unable to travel from #{origin_planet.name} to #{destination_planet.name} due an issue with the route"}, status: :unprocessable_entity and return
                 end
                 render json: {error: "#{Planet::TRAVEL_ADJACENCY_LIST[current_location.name].keys.include?(destination_planet.name)}  Unable to travel from the ship's current loacation at #{current_location.name} to #{origin_planet.name} due an issue with the route"}, status: :unprocessable_entity and return
             end

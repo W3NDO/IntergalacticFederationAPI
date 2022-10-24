@@ -68,8 +68,6 @@ end
 
 pp "#{Pilot.count} pilots created"
 
-#ship seeds
-pp ">>>>> Seeding Ships"
 
 ship_names = ["USS Orville", "Normandy", "Black Perl"]
 ship_names.each_with_index do |ship, index|
@@ -83,55 +81,26 @@ ship_names.each_with_index do |ship, index|
 end
 pp "#{Ship.count} ships created"
 
-# contract seeds
-pp ">>>>> Seeding Contracts"
-4.times do
+3.times do |t|
     origin = valid_routes.keys.sample
     destination = valid_routes[origin].keys.sample
-    resource = resource_types.sample
-    Contract.create(
-        description: "Transport #{resource} from #{origin} to #{destination}",
-        payload: resource,
-        origin_planet: origin,
-        destination_planet: destination,
-        value_cents: rand(200..500),
-        status: ["open", "closed"].sample
-    )
-end
-pp "#{Contract.count} contracts created"
-
-#resource seeds
-pp ">>>>> Seeding Resources"
-resource_types.each do |resource|
-    Resource.create(
-        name: resource,
-        weight: rand(100..300)
-    )
-end
-pp "#{Resource.count} resources created"
-
-# FinancialTransaction seeds
-pp ">>>>> Seeding Financial Transactions"
-# This is a transport transaction
-pp " \t building Transport transactions"
-2.times do
-    origin = valid_routes.keys.sample
-    destination = valid_routes[origin].keys.sample
-    pilot = Pilot.find(rand(1..3))
+    pilot = Pilot.find(t+1)
+    
     FinancialTransaction.create(
-        description: "Transporting #{resource_types.sample} from #{origin} to #{destination}",
+        description: "Transporting #{resource_types[t]} from #{origin} to #{destination}",
         transaction_type: "resource_transport",
         amount: rand(100..500),
         pilot_id: rand(1..3),
         destination_planet_id: Planet.find_by(name: destination).id,
         origin_planet_id: Planet.find_by(name: origin).id,
-        ship_id: Ship.find_by(pilot_id: pilot.id).id  
+        ship_id: Ship.find_by(pilot_id: pilot.id).id,
+        value_cents: rand(300..400)
     )    
 end
 pp "#{FinancialTransaction.count} Transport transactions created"
+
 # a fuel refill transaction
-pp " \t building Fuel Refill transactions"
-2.times do
+4.times do
     origin = valid_routes.keys.sample
     pilot = Pilot.find(rand(1..3))
     FinancialTransaction.create(
@@ -140,9 +109,35 @@ pp " \t building Fuel Refill transactions"
         amount: rand(100..500),
         pilot_id: rand(1..3),
         origin_planet_id: Planet.find_by(name: origin).id,
-        ship_id: Ship.find_by(pilot_id: pilot.id).id 
+        ship_id: Ship.find_by(pilot_id: pilot.id).id,
+        value_cents: rand(400..700)
     )
 end
 pp "#{FinancialTransaction.count} Fuel Refill transactions created"
 
 
+3.times do |t|
+    origin = valid_routes.keys.sample
+    destination = valid_routes[origin].keys.sample
+    resource = resource_types.sample
+    tx = FinancialTransaction.find(t+1)
+    Contract.create(
+        description: "Transport #{resource_types[t]} from #{origin} to #{destination}",
+        payload: resource,
+        origin_planet: origin,
+        destination_planet: destination,
+        value_cents: tx.value_cents,
+        status: ["open", "closed"].sample,
+        financial_transaction_id: (t+1)
+    )
+end
+pp "#{Contract.count} contracts created"
+
+resource_types.each_with_index do |resource, index|
+    Resource.create(
+        name: resource,
+        weight: rand(100..300),
+        contract_id: index+1
+    )
+end
+pp "#{Resource.count} resources created"

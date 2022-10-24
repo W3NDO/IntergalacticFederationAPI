@@ -41,7 +41,25 @@ class Planet < ApplicationRecord
         return [true, nil]
     end
 
-    def update_totals
-        # sent = self.
+    def update_totals(new_sent, new_received)
+        valid_keys = ["minerals", "water", "food"]
+        temp_exclusions = []
+        (new_sent.merge new_received).keys.each do |key|
+            temp_exclusions << key unless valid_keys.include?(key)
+        end
+        new_sent = new_sent.except(temp_exclusions.join(','))
+        new_received = new_received.except(temp_exclusions.join(','))
+        old_sent = self.resources_sent
+        new_sent.each do |k, v|
+            old_sent[k] = old_sent[k] + new_sent[k] if valid_keys.include?(k.downcase)
+        end
+
+        old_received = self.resources_received
+        new_received.each do |k, v|
+            old_received[k] = old_received[k] + new_received[k] if valid_keys.include?(k.downcase)
+        end
+        self.update(resources_sent: old_sent, resources_received: old_received) and return true
+        false
     end
+
 end

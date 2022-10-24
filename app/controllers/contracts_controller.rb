@@ -86,7 +86,7 @@ class ContractsController < ApplicationController
     # update ship
 
   
-    ship.update(fuel_level: ship.fuel_level - Planet::TRAVEL_ADJACENCY_LIST[origin_planet.name][destination_planet.name]) and pp "Updated ship fuel level to #{ship.fuel_level}"
+    ship.update(fuel_level: ship.fuel_level - Planet::TRAVEL_ADJACENCY_LIST[origin_planet.name][destination_planet.name]) 
     pilot.update(location_planet: destination_planet.name)
     contract.active! # sets the contract status to active. 
 
@@ -107,7 +107,10 @@ class ContractsController < ApplicationController
     )
     if transaction.save
       contract.update(financial_transaction_id: transaction.id)
-      render json: {message: "Contract accepted by #{pilot.name} of the #{ship.name}", transaction: transaction}, status: :ok and return
+      resources = contract.combine_resources_to_hash
+      if origin_planet.update_totals(resources, {})
+        render json: {message: "Contract accepted by #{pilot.name} of the #{ship.name}", transaction: transaction}, status: :ok and return
+      end
     else
       render json: {error: "unable to complete transaction due to a server error"}, status: :internal_server_error and return
     end
@@ -132,12 +135,19 @@ class ContractsController < ApplicationController
     transaction = FinancialTransaction.find(contract.financial_transaction_id) rescue nil
     render json: {error: "Contract does not have a financial transaction associated with it"}, status: :unprocessable_entity and return unless transaction
 
+    render json: {error: "Associated transaction is of the wrong type"}, status: :unprocessable_entity and return unless transaction.transaction_type == "resource_transport"
+
+    destination_planet = Planet.find(transaction.destination_planet_id)
+    render json: {error: "Could not find destination planet"}, status: :unprocessable_entity and return unless destination_planet
     transaction.update(description: transaction.description.gsub("is transporting", "successfully transported"))
-    planet = Planet.find(transaction.destination_planet_id)
     contract.closed!
-    pilot.update(credits_cents: pilot.credits_cents + transaction.value_cents)
-    # planet.update(resources)
-    render json: {message: "Contract fulfilled, pilot has been credited", data: transaction}, status: :ok
+  
+    resources = contract.combine_resources_to_hash
+    pilot.update(credits_cents: pilot.credits_cents + transaction.value_cents, totals: resources)
+    
+    if destination_planet.update_totals({}, resources || {})
+      render json: {message: "Contract fulfilled, pilot has been credited in the amount of #{transaction.value_cents}", data: transaction}, status: :ok
+    end
   end
 
 

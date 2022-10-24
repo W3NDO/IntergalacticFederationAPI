@@ -15,6 +15,14 @@ class Contract < ApplicationRecord
     validates :value_cents, presence: true
     validates :status, presence: true
 
+    def combine_resources_to_hash
+        resources = self.resources
+        hash = {}
+        resources.each do |resource|
+            hash[resource.name] = hash.fetch(resource.name, 0) + resource.weight
+        end
+        hash
+    end
     private
     def check_validity
         errors.add_to_base("Can not travel to #{self.destination_planet}") and return false unless Planet::TRAVEL_ADJACENCY_LIST.keys.include?(self.origin_planet.downcase)

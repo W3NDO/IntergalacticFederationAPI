@@ -79,7 +79,8 @@ RSpec.describe "/travel", type: :request do
         expect(body["error"]).to eq("Destination Planet does not exist")
     end
 
-    let(:ship) {Ship.create!(pilot_id: Pilot.last.id, name: "Tempest", fuel_capacity: 30, fuel_level: 10, weight_capacity: 10 )}
+    let(:pilot) {Pilot.create!(name: "Mercer", certification: 1989860, location_planet:"aqua", credits_cents: 420, age: 19, totals: {})}
+    let(:ship) {Ship.create!(pilot_id: pilot.id, name: "Tempest", fuel_capacity: 30, fuel_level: 1, weight_capacity: 10 )}
     let(:origin_planet) {Planet.create!(name: "aqua", resources_sent: 0, resources_received: 0)}
     let(:destination_planet) {Planet.create!(name: "demeter", resources_sent: 0, resources_received: 0)}
     it "returns low fuel error" do
