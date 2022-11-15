@@ -6,6 +6,7 @@ This documentation is meant to help you understand how best to utilise our syste
 valid planets = ["andvari", "aqua", "calas", "demeter"]
 **Note** Anytime you need to pass a planet by name, it has to be lowercase
  - Examples of valid pilot ceritifications that pass Luhn validations [1996512, 1996521, 1996530, 1996549. 1996558, 1996567, 1996576, 1996585, 1996594, 1999939, 1999948, 1999957, 1999966, 1999975, 1999984. 1999993]
+ - if you run `ruby test.rb` you will get valid Luhn certification between 1000000 and 2000000
 
  ## FEAT 1: Add pilots and ships to the system
  ### POST request to `/pilots` to create a new pilot
