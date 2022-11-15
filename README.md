@@ -1,4 +1,9 @@
-# Technical Documentation to get the system setup
+# Intergalactic Federation Travel API
+This API is used to manage information about pilots, tehir ships, and the cargo they transport across the known stretches of intergalactic federation space. 
+
+This documentation is meant to help you understand how best to utilise our system..
+
+## Technical Documentation to get the system setup
 
 Requirements: 
 1. Ruby 2.7.4 or higher. If you are using a newer version, remeber to change that in the [Gemfile](./Gemfile)
