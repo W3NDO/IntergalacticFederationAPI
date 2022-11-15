@@ -1,7 +1,9 @@
 # Intergalactic Federation Travel API
-This API is used to manage information about pilots, tehir ships, and the cargo they transport across the known stretches of intergalactic federation space. 
+This API is used to manage information about pilots, their ships, and the cargo they transport across the known stretches of intergalactic federation space. 
 
-This documentation is meant to help you understand how best to utilise our system..
+This documentation is meant to help you understand how best to utilise our system.
+
+The full spec for this system can be found [here](https://gist.github.com/talyssonoc/fa8094bc4f87ecee9f483f5fbc16862c)
 
 ## Technical Documentation to get the system setup
 
